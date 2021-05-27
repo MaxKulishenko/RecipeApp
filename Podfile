@@ -7,6 +7,7 @@ target 'RecipeApp' do
 
   # Pods for RecipeApp
 pod 'NVActivityIndicatorView'
+pod 'SDWebImage'
 
   target 'RecipeAppTests' do
     inherit! :search_paths
