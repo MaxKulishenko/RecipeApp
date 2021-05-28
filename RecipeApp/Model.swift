@@ -23,7 +23,7 @@ struct Recipe: Codable {
     let uri: String
     let label: String
     let image: String
-    let calories: Double
+    var calories: Double
     let totalWeight: Double
     var ingredientLines: [String] = []
 }

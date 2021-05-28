@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -102,6 +103,7 @@
                                                     <outlet property="recipeEnergy" destination="ipc-lF-TzT" id="iyl-Ru-cS3"/>
                                                     <outlet property="recipeImage" destination="fgU-Ss-6EH" id="5FH-9R-YBi"/>
                                                     <outlet property="recipeName" destination="HbX-i1-zF7" id="fN6-xi-kcy"/>
+                                                    <segue destination="RK8-RC-Ktb" kind="presentation" modalPresentationStyle="fullScreen" id="4g3-cz-BwQ"/>
                                                 </connections>
                                             </tableViewCell>
                                         </prototypes>
@@ -117,11 +119,13 @@
                                     <constraint firstAttribute="trailing" secondItem="eIe-TT-qmA" secondAttribute="trailing" id="zMF-kl-gJm"/>
                                 </constraints>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7As-uK-nao">
-                                <rect key="frame" x="96" y="50" width="222" height="36"/>
-                                <fontDescription key="fontDescription" type="system" weight="black" pointSize="20"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7As-uK-nao">
+                                <rect key="frame" x="106" y="64" width="202" height="22"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                <color key="tintColor" red="0.0078431372550000003" green="0.015686274510000001" blue="0.062745098040000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="Search for your recipe">
                                     <color key="titleColor" red="0.0078431372550000003" green="0.015686274510000001" blue="0.062745098040000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <imageReference key="image" image="magnifyingglass" catalog="system" symbolScale="medium"/>
                                 </state>
                                 <connections>
                                     <action selector="showSearchBarButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Xbh-iq-tWl"/>
@@ -157,6 +161,31 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="944.92753623188412" y="-172.09821428571428"/>
+        </scene>
+        <!--Details View Controller-->
+        <scene sceneID="Ti8-E7-Q98">
+            <objects>
+                <viewController id="olV-AD-ANI" customClass="DetailsViewController" customModule="RecipeApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="o6c-BZ-PO3">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="V9y-hc-T0t"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="UnI-dd-vIj">
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="YrY-Ge-Ul3">
+                            <connections>
+                                <action selector="backButtonPressed:" destination="olV-AD-ANI" id="2jO-Yq-dwx"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="bsY-ov-bqF"/>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vlJ-CI-Uvl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2673.913043478261" y="-172.09821428571428"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="cKG-PD-S9f">
@@ -204,9 +233,28 @@
             </objects>
             <point key="canvasLocation" x="34.782608695652179" y="93.75"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="6eA-GW-Jdo">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="RK8-RC-Ktb" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Oik-yp-EO2">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="olV-AD-ANI" kind="relationship" relationship="rootViewController" id="wBI-Vq-aGl"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pRa-mh-f1d" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1763.7681159420292" y="-172.09821428571428"/>
+        </scene>
     </scenes>
     <resources>
         <image name="background" width="1125" height="2436"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="115"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

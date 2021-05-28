@@ -5,9 +5,9 @@
 //  Created by Maksym on 26.05.2021.
 //
 
-import UIKit
-import NVActivityIndicatorView
+
 import SDWebImage
+import UIKit
 
 class SearchPageViewController: UIViewController {
     // MARK: - IBOutlets
@@ -16,35 +16,26 @@ class SearchPageViewController: UIViewController {
     @IBOutlet var searchOptionView: UIView!
     @IBOutlet var searchTextField: UITextField!
     @IBOutlet var searchButtonOutlet: UIButton!
-    
+
     // MARK: - Vars
 
-    let urlString = "https://api.edamam.com/search?q=chicken&app_id=\(Constants.app_id)&app_key=\(Constants.app_key)"
-    
-    var results : [Hit] = []
-    var searchResults : [Hit] = []
+    var results: [Hit] = []
+    var searchResults: [Hit] = []
 
-    var activityIndicator: NVActivityIndicatorView?
-    
+   
 
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchRecipes()
         searchTableView.tableFooterView = UIView()
         searchTableView.delegate = self
         searchTableView.dataSource = self
         searchTextField.addTarget(self, action: #selector(textFieldDidChange(_textField:)), for: UIControl.Event.editingChanged)
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        activityIndicator = NVActivityIndicatorView(frame: CGRect(x: self.view.frame.width / 2 - 30, y: self.view.frame.height / 2 - 30, width: 60, height: 60), type: .orbit, color: #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1))
-    }
 
-    
-    
+  
+
     // MARK: - IBActions
 
     @IBAction func showSearchBarButtonPressed(_ sender: Any) {
@@ -53,14 +44,18 @@ class SearchPageViewController: UIViewController {
     }
 
     @IBAction func searchButtonPressed(_ sender: Any) {
+        dismissKeyboard()
+        if let text = searchTextField.text {
+            results = []
+            searchTableView?.reloadData()
+            fetchRecipes(query: text)
+        }
     }
 
     // MARK: - Functions
-    
-    
-    
-    func fetchRecipes() {
-        
+
+    func fetchRecipes(query: String) {
+        let urlString = "https://api.edamam.com/search?q=\(query)&app_id=\(Constants.app_id)&app_key=\(Constants.app_key)"
         guard let url = URL(string: urlString) else {
             return
         }
@@ -68,7 +63,7 @@ class SearchPageViewController: UIViewController {
             guard let data = data, error == nil else {
                 return
             }
-            
+
             do {
                 let jsonResult = try JSONDecoder().decode(APIResponse.self, from: data)
                 DispatchQueue.main.async {
@@ -76,25 +71,16 @@ class SearchPageViewController: UIViewController {
                     self?.searchTableView?.reloadData()
                     dump(self?.results)
                 }
-                    
-            }
-            catch {
+            } catch {
                 print(error)
             }
-            
-            
         }
-    
+
         task.resume()
     }
+
     // MARK: - Helpers
 
-    
-    
-    
-    private func emptyTextField() {
-        searchTextField.text = " "
-    }
 
     private func dismissKeyboard() {
         view.endEditing(false)
@@ -117,7 +103,7 @@ class SearchPageViewController: UIViewController {
 
     private func showSearchField() {
         disableSearchButton()
-        emptyTextField()
+       // emptyTextField()
         animateSearchOptionsIn()
     }
 
@@ -128,24 +114,8 @@ class SearchPageViewController: UIViewController {
             self.searchOptionView.isHidden = !self.searchOptionView.isHidden
         }
     }
-    
-    //MARK: - Activity indicator
-    
-    private func showLoadingIndicator() {
-        if activityIndicator != nil {
-            self.view.addSubview(activityIndicator!)
-            activityIndicator!.startAnimating()
-        }
-    }
-    
-    private func hideLoadingIndicator() {
-        if activityIndicator != nil {
-            activityIndicator!.removeFromSuperview()
-            activityIndicator!.stopAnimating()
-        }
-    }
-    
-    
+
+
 }
 
 // MARK: - Extensions
@@ -161,7 +131,7 @@ extension SearchPageViewController: UITableViewDataSource, UITableViewDelegate {
         if let url = URL(string: imageUrl) {
             cell.recipeImage.sd_setImage(with: url, completed: nil)
         }
-        cell.recipeEnergy.text = "\(results[indexPath.row].recipe.calories)"
+        cell.recipeEnergy.text = "Energy: \(results[indexPath.row].recipe.calories.rounded()) kcal"
         cell.recipeName.text = results[indexPath.row].recipe.label
         return cell
     }
