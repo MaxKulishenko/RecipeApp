@@ -15,6 +15,7 @@ struct APIResponse: Codable {
     let count: Int
     let hits: [Hit]
 }
+
 struct Hit: Codable {
     var recipe: Recipe
 }
@@ -27,4 +28,5 @@ struct Recipe: Codable {
     let totalWeight: Double
     var ingredientLines: [String] = []
 }
+
 

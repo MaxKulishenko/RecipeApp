@@ -8,7 +8,7 @@
 import UIKit
 
 class SearchResultTableViewCell: UITableViewCell {
-
+    
     @IBOutlet weak var recipeImage: UIImageView!
     
     @IBOutlet weak var recipeName: UILabel!

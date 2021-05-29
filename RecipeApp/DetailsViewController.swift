@@ -11,73 +11,77 @@ import SDWebImage
 class DetailsViewController: UIViewController {
     
     //MARK: - IBOutlets
-
+    
     @IBOutlet weak var recipeImage: UIImageView!
     @IBOutlet weak var recipeNameLabel: UILabel!
-    @IBOutlet weak var recipeEnergyLabel: UILabel!
-    @IBOutlet weak var recipeUnitLabel: UILabel!
-    @IBOutlet weak var recipeProteinLabel: UILabel!
-    @IBOutlet weak var recipeFatLabel: UILabel!
-    @IBOutlet weak var recipeCarbsLabel: UILabel!
+    @IBOutlet weak var recipeCaloriesLabel: UILabel!
+    @IBOutlet weak var recipeTotalWeight: UILabel!
+    
+    @IBOutlet weak var recipeDescLabel: UILabel!
+    @IBOutlet weak var favoritesButton: UIBarButtonItem!
     
     //MARK: - Vars
     
-    var results: [Hit] = []
+    static public var result: Hit?
     
     //MARK: - View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        
+        navigationController?.navigationBar.isHidden = false
+        setUpViews()
+        guard let result = DetailsViewController.result else {return}
+        if isRecipeInFavourites(recipe: result).isInFav {
+            favoritesButton.image = UIImage(systemName: "heart.fill")
+        }
+        else {
+            favoritesButton.image = UIImage(systemName: "heart")
+        }
     }
     
+    //MARK: - Methods
     
-    //MARK: - Functions
+    public func isRecipeInFavourites(recipe: Hit) -> (isInFav: Bool, index: Int?) {
+        
+        var index = 0
+        for favRecipe in FavoritesViewController.favouriteRecipes {
+            if favRecipe?.recipe.label == recipe.recipe.label {
+                return (true, index)
+            }
+            else {
+                index += 1
+            }
+        }
+        return (false, nil)
+    }
     
-    func fetchRecipes(query: String) {
-        let urlString = "https://api.edamam.com/search?q=\(query)&app_id=\(Constants.app_id)&app_key=\(Constants.app_key)"
-        guard let url = URL(string: urlString) else {
+    private func setUpViews() {
+        guard let recipe = DetailsViewController.result,
+              let imageURL = URL(string: recipe.recipe.image)
+        else {
             return
         }
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            guard let data = data, error == nil else {
-                return
-            }
-
-            do {
-                let jsonResult = try JSONDecoder().decode(APIResponse.self, from: data)
-                DispatchQueue.main.async {
-                    self?.results = jsonResult.hits
-//                    self?.searchTableView?.reloadData()
-                    dump(self?.results)
-                }
-            } catch {
-                print(error)
-            }
-        }
-
-        task.resume()
+        recipeImage.sd_setImage(with: imageURL, completed: nil)
+        recipeCaloriesLabel.text = "\(recipe.recipe.calories.rounded()) kcal"
+        recipeTotalWeight.text = "\(recipe.recipe.totalWeight.rounded()) g"
+        recipeNameLabel.text = "\(recipe.recipe.label)"
+        recipeDescLabel.text = recipe.recipe.ingredientLines.joined(separator: "\n")
     }
-
     
-    
-    @IBAction func backButtonPressed(_ sender: Any) {
-        dismiss(animated: true) {
-    
-        }
-    }
+    // MARK: - IBActions
     
     @IBAction func likeButtonPressed(_ sender: Any) {
+        guard let result = DetailsViewController.result else {return}
+        if isRecipeInFavourites(recipe: result).isInFav {
+            guard let index = isRecipeInFavourites(recipe: result).index
+            else {return}
+            FavoritesViewController.favouriteRecipes.remove(at: index)
+            favoritesButton.image = UIImage(systemName: "heart")
+        }
+        else {
+            FavoritesViewController.favouriteRecipes.append(result)
+            favoritesButton.image = UIImage(systemName: "heart.fill")
+            print(FavoritesViewController.favouriteRecipes)
+        }
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
